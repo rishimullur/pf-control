@@ -1,5 +1,5 @@
 import streamlit as st
-import base64, os
+import base64, os, json, uuid
 import requests
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
@@ -43,6 +43,36 @@ with col2:
     weight = st.number_input("⚖️ Enter your weight (in kg)", min_value=0.0, format="%.2f", help="Your current weight in kilograms.")
     target_weight = st.number_input("🎯 Enter your target weight (in kg)", min_value=0.0, format="%.2f", help="Your desired weight goal in kilograms.")
 time_plan = st.number_input("🕰️ Enter your time plan to reach target weight (in months)", min_value=0.0, format="%.2f", help="The duration in months to achieve your target weight.")
+
+
+# Function to send POST request to save health details
+def save_health_details(user_id, age, weight, height):
+    url = "http://localhost:5000/save_health_details"
+    headers = {"Content-Type": "application/json"}
+    data = {
+        "user_id": user_id,
+        "age": age,
+        "weight": weight,
+        "height": height
+    }
+    try:
+        response = requests.post(url, headers=headers, data=json.dumps(data))
+        if response.status_code == 200:
+            st.success(f"Health details saved successfully! Your user ID is {user_id}.")
+        else:
+            st.error(f"Failed to save health details. Status code: {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        st.error(f"An error occurred: {e}")
+
+# Add a button to send health details
+if st.button("Save Health Details"):
+    if age > 0 and height > 0.0 and weight > 0.0:
+        # Generate a unique user_id
+        user_id = str(uuid.uuid4())
+        save_health_details(user_id, age, weight, height)
+        # st.write(f"Your unique user ID is: {user_id}")
+    else:
+        st.error("Please fill in all your health details before saving.")
 
 # Function to calculate BMR using the Harris-Benedict equation
 # Assuming the user is male. For female, the formula will be different.
@@ -189,6 +219,9 @@ else:
 
             else:
                 st.error("Failed to get a response from the server.")
+
+
+
 
 # Add a footer
 st.markdown("""
