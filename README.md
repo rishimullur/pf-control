@@ -1,6 +1,6 @@
 # Should You Eat This?
 
-A easy-to-use app that provides advice to help you make informed decisions about your food choices.
+An easy-to-use app that provides advice to help you make informed decisions about your food choices.
 
 ## Technologies Used
 
@@ -8,7 +8,7 @@ A easy-to-use app that provides advice to help you make informed decisions about
 - OpenAI API (GPT-4)
 - Flask
 
-### Written in python & uses several native libraries like matplotlib etc.
+### Written in Python & uses several native libraries like matplotlib etc.
 
 ## Problem Statement
 
@@ -17,9 +17,12 @@ Making healthy food choices can be challenging, especially when trying to achiev
 ## How to Run
 
 1. Clone the repository
-2. Install the required dependencies: `pip install -r requirements.txt`
-3. Set up your OpenAI API key as an environment variable: `export OPENAI_API_KEY=your_api_key_here`
-4. Run the Streamlit app: `streamlit run app.py`
+2. Install the required dependencies: `pip3 install -r requirements.txt`
+3. Set up your OpenAI API key as an environment variable via a .env  file or via the command `export OPENAI_API_KEY=your_api_key_here`
+4. Also add the base URL for the openai API usage via the .env file or via the command `export OPENAI_ENDPOINT=your_base_url`
+5. Run the Streamlit app: `streamlit run app.py`
+6. Additionally to expose the local API, run `python3 server.py`
+7. Now you can add user inputs. The local API can be found and available via CLI: `curl http://localhost:5000/get_health_details/<user_id>`
 
 ## Reflections
 
@@ -40,4 +43,13 @@ Through this project, I gained valuable experience in integrating various techno
 
 3. **Handling Edge Cases**: Accounting for various edge cases, such as incomplete or invalid user inputs, required additional error handling and input validation mechanisms.
 
-Despite these challenges, working on this project has been an learning experience, reinforcing the importance of attention to detail, thorough testing, and continuous iteration to create a robust and user-friendly application.
+Despite these challenges, working on this project has been a learning experience, reinforcing the importance of attention to detail, thorough testing, and continuous iteration to create a robust and user-friendly application.
+
+
+### In case you find issues while running
+
+1. After I upload an image on streamlit, an error with `Failed to get a response from the server.` or a similar error is shown.
+Ans: Your openai key is either revoked or expired. Use a new key and add it as an environment variable either in streamlit env runtime or as a variable if running locally.
+
+2. What is a base-URL for Openai?
+Ans: The project was built based on a different custom URL provided with credits for a class project work. For normal usage, please use the base api url from openai documentation. For 510 analysis, use base URL provided by the Instructor to successfully execute the commands.
