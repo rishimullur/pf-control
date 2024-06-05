@@ -10,6 +10,7 @@ load_dotenv()
 
 # OpenAI API Key
 api_key = os.getenv('OPENAI_API_KEY')
+openai_endpoint = os.getenv('OPENAI_ENDPOINT')
 
 # Ensure the API key is available
 if not api_key:
@@ -45,7 +46,7 @@ with col2:
 time_plan = st.number_input("🕰️ Enter your time plan to reach target weight (in months)", min_value=0.0, format="%.2f", help="The duration in months to achieve your target weight.")
 
 
-# Function to send POST request to save health details
+# Function to send POST request to save health detail
 def save_health_details(user_id, age, weight, height):
     url = "http://localhost:5000/save_health_details"
     headers = {"Content-Type": "application/json"}
@@ -61,6 +62,8 @@ def save_health_details(user_id, age, weight, height):
             st.success(f"Health details saved successfully! Your user ID is {user_id}.")
         else:
             st.error(f"Failed to save health details. Status code: {response.status_code}")
+    except requests.exceptions.ConnectionError:
+        st.error("Failed to connect to the local server. This service is only available when running locally. Please ensure the local API service is running.")
     except requests.exceptions.RequestException as e:
         st.error(f"An error occurred: {e}")
 
@@ -70,7 +73,6 @@ if st.button("Save Health Details"):
         # Generate a unique user_id
         user_id = str(uuid.uuid4())
         save_health_details(user_id, age, weight, height)
-        # st.write(f"Your unique user ID is: {user_id}")
     else:
         st.error("Please fill in all your health details before saving.")
 
@@ -175,7 +177,8 @@ else:
             }
 
             # Send the first request
-            response = requests.post("https://openai.ianchen.io/v1/chat/completions", headers=headers, json=first_payload)
+            response = requests.post(openai_endpoint, headers=headers, json=first_payload)
+            # print(response.json())
             if response.status_code == 200:
 
                     # Extracting the content from the first response
@@ -202,7 +205,7 @@ else:
                     }
 
                     # Send the combined request
-                    combined_response = requests.post("https://openai.ianchen.io/v1/chat/completions", headers=headers, json=combined_payload)
+                    combined_response = requests.post(openai_endpoint, headers=headers, json=combined_payload)
 
                     # Extracting the content from the combined response
                     combined_response_content = combined_response.json()['choices'][0]['message']['content']
